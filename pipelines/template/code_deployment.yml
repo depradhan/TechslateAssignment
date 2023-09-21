@@ -34,5 +34,5 @@ stages:
               inputs:
                 azureSubscription: 'Assignment_Azure'
                 appType: webAppLinux
-                WebAppName: 'freelancing-dev'
+                WebAppName: 'freelancing-${{parameters.ringName}}'
                 packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.war'
