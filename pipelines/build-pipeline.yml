@@ -44,12 +44,12 @@ stages:
       - job: Terraform_Step_${{ring.name}}
         displayName: 'validate Infra code'
         steps:
-          - template: Templates/terraform_steps.yml
+          - template: template/terraform_steps.yml
             parameters:
               ringName: ${{ring.name}}
 
 #Dynamic step to create 'N' no of Deployments stages based on Number of enviroments mentioned in ringName parameters
 - ${{each ring in parameters.rings}}:
-      - template: Templates/code_deployment.yml
+      - template: template/code_deployment.yml
         parameters:
           ringName: ${{ring.name}}
