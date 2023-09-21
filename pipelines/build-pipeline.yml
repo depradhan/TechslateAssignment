@@ -1,0 +1,55 @@
+#Multi Stage Pipeline 
+# Stage 1 - Build Phase - compilation of app code and DB code along with Terraform validate job
+# Stage 2 - Deployment Phase - Deploy the infra code and the DB and App code in Dev Environment
+
+name: $(Rev:r)
+
+pool:
+  vmImage: 'windows-latest'
+
+parameters:
+ - name: rings
+   displayName: rings
+   type: object
+   default:
+      - name: "dev" 
+      - name: "qa"
+      - name: "prod"
+
+stages:
+- stage: build
+  jobs:
+    - job: Compile
+      displayName: 'Compile App code and DB code'
+      steps:
+      - task: Maven@4
+        displayName: 'Maven pom.xml'
+        inputs:
+          options: '-DskipITs --settings ./maven/settings.xml'
+
+      - task: CopyFiles@2
+        displayName: 'Copy Files'
+        inputs:
+          SourceFolder: '$(build.sourcesdirectory)'
+          Contents: |
+          **/target/*.war
+          *.sql
+          TargetFolder: '$(build.artifactstagingdirectory)'
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifact: drop'
+
+# for loop to run the terraform steps for different enviroements based on the no of environments mention in ringName Parameters
+    - ${{each ring in parameters.rings}}:
+      - job: Terraform_Step_${{ring.name}}
+        displayName: 'validate Infra code'
+        steps:
+          - template: Templates/terraform_steps.yml
+            parameters:
+              ringName: ${{ring.name}}
+
+#Dynamic step to create 'N' no of Deployments stages based on Number of enviroments mentioned in ringName parameters
+- ${{each ring in parameters.rings}}:
+      - template: Templates/code_deployment.yml
+        parameters:
+          ringName: ${{ring.name}}

@@ -1,0 +1,38 @@
+parameters:
+  - name: ringName
+    type: string
+stages:
+  - stage: ${{parameters.ringName}}
+    jobs:
+      - deployment: ${{parameters.ringName}}
+        environment: ${{parameters.ringName}}
+        strategy:
+         runOnce:
+          deploy:
+           steps:
+            - task: DownloadBuildArtifacts@1
+              displayName: 'Download Artifacts'
+              inputs:
+                  buildType: 'current'
+                  downloadType: 'specific'
+                  downloadPath: '$(System.ArtifactsDirectory)'
+
+            - template: ./terraform_steps.yml
+              parameters:
+                ringName: ${{parameters.ringName}}
+
+            - task: MysqlDeploymentOnMachineGroup@1
+              displayName: 'Deploy Using : SqlTaskFile'
+              inputs:
+                SqlFile: '$(System.DefaultWorkingDirectory)/_MyShuttleBuild/drop/CreateMYSQLDB.sql'
+                ServerName: techslate.mysql.database.azure.com
+                SqlUsername: demo
+                SqlPassword: 'assignment@12'
+
+            - task: AzureRmWebAppDeployment@4
+              displayName: 'Azure App Service Deploy'
+              inputs:
+                azureSubscription: 'Assignment_Azure'
+                appType: webAppLinux
+                WebAppName: 'freelancing-dev'
+                packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.war'

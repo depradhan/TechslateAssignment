@@ -1,0 +1,39 @@
+parameters:
+  - name: ringName
+    type: string
+
+steps:
+  - task: TerraformInstaller@1
+    displayName: 'Install Terraform Tool'
+    inputs:
+      terraformVersion: 'latest'
+
+  - task: TerraformTaskV4@4
+    displayName: 'Terraform init'
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      commandOptions: '-backend-config="../../Terraform/backend/backend-${{parameters.ringName}}.tfvars"'
+      backendServiceArm: 'InsightApp'
+
+  - task: TerraformTaskV4@4
+    displayName: 'Terraform Validate'
+    inputs:
+      provider: 'azurerm'
+      command: 'validate'
+
+  - task: TerraformTaskV4@4
+    displayName: 'Terraform Plan'
+    inputs:
+      provider: 'azurerm'
+      command: 'plan'
+      commandOptions: '-var-file="../../Terraform/variables/${{parameters.ringName}}.tfvars"'
+      environmentServiceNameAzureRM: 'InsightApp'
+
+  - task: TerraformTaskV4@4
+    displayName: 'Terraform Apply'
+    inputs:
+      provider: 'azurerm'
+      command: 'plan'
+      commandOptions: '-var-file="../../Terraform/variables/${{parameters.ringName}}.tfvars" -auto-approve'
+      environmentServiceNameAzureRM: 'InsightApp'
