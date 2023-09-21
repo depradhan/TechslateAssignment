@@ -32,8 +32,8 @@ stages:
         inputs:
           SourceFolder: '$(build.sourcesdirectory)'
           Contents: |
-          **/target/*.war
-          *.sql
+            **/target/*.war
+            *.sql
           TargetFolder: '$(build.artifactstagingdirectory)'
 
       - task: PublishBuildArtifacts@1
