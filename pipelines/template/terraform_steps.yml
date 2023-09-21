@@ -7,33 +7,44 @@ steps:
     displayName: 'Install Terraform Tool'
     inputs:
       terraformVersion: 'latest'
-
-  - task: Bash@3
-    displayName: 'Terraform init'
+      
+  - task: AzureCLI@2
+    displayName: "Terraform Init"
     inputs:
-      targetType: 'inline'
-      script: 'terraform init -backend-config="./backend/backend-${{parameters.ringName}}.tfvars"'
+      azureSubscription: 'InsightApp'
+      scriptType: 'batch'
+      scriptLocation: 'inlineScript'
+      inlineScript: 'terraform init -backend-config="./backend/backend-${{parameters.ringName}}.tfvars"'
+      addSpnToEnvironment: true
+      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+
+  - task: AzureCLI@2
+    displayName: "Terraform validate"
+    inputs:
+      azureSubscription: 'InsightApp'
+      scriptType: 'batch'
+      scriptLocation: 'inlineScript'
+      inlineScript: 'terraform validate -var-file="./variables/${{parameters.ringName}}.tfvars"'
+      addSpnToEnvironment: true
       workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
 
 
-  - task: Bash@3
-    displayName: 'Terraform Validate'
+  - task: AzureCLI@2
+    displayName: "Terraform plan"
     inputs:
-      targetType: 'inline'
-      script: 'terraform validate -var-file="./variables/${{parameters.ringName}}.tfvars"'
+      azureSubscription: 'InsightApp'
+      scriptType: 'batch'
+      scriptLocation: 'inlineScript'
+      inlineScript: 'terraform plan -var-file="./variables/${{parameters.ringName}}.tfvars"'
+      addSpnToEnvironment: true
       workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
 
-  - task: Bash@3
-    displayName: 'Terraform plan'
+  - task: AzureCLI@2
+    displayName: "Terraform apply"
     inputs:
-      targetType: 'inline'
-      script: 'terraform plan -var-file="./variables/${{parameters.ringName}}.tfvars"'
-      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform' 
-
-
-  - task: Bash@3
-    displayName: 'Terraform apply'
-    inputs:
-      targetType: 'inline'
-      script: 'terraform apply -var-file="./variables/${{parameters.ringName}}.tfvars" -auto-approve'
-      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform' 
+      azureSubscription: 'InsightApp'
+      scriptType: 'batch'
+      scriptLocation: 'inlineScript'
+      inlineScript: 'terraform plan -var-file="./variables/${{parameters.ringName}}.tfvars"'
+      addSpnToEnvironment: true
+      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
