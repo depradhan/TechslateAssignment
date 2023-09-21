@@ -13,7 +13,7 @@ steps:
     inputs:
       provider: 'azurerm'
       command: 'init'
-      commandOptions: '-backend-config="../../Terraform/backend/backend-${{parameters.ringName}}.tfvars"'
+      commandOptions: '-backend-config="../../terraform/backend/backend-${{parameters.ringName}}.tfvars"'
       backendServiceArm: 'InsightApp'
 
   - task: TerraformTaskV4@4
@@ -27,7 +27,7 @@ steps:
     inputs:
       provider: 'azurerm'
       command: 'plan'
-      commandOptions: '-var-file="../../Terraform/variables/${{parameters.ringName}}.tfvars"'
+      commandOptions: '-var-file="../../terraform/variables/${{parameters.ringName}}.tfvars"'
       environmentServiceNameAzureRM: 'InsightApp'
 
   - task: TerraformTaskV4@4
@@ -35,5 +35,5 @@ steps:
     inputs:
       provider: 'azurerm'
       command: 'plan'
-      commandOptions: '-var-file="../../Terraform/variables/${{parameters.ringName}}.tfvars" -auto-approve'
+      commandOptions: '-var-file="../../terraform/variables/${{parameters.ringName}}.tfvars" -auto-approve'
       environmentServiceNameAzureRM: 'InsightApp'
