@@ -8,37 +8,32 @@ steps:
     inputs:
       terraformVersion: 'latest'
 
-  - task: TerraformTaskV4@4
+  - task: Bash@3
     displayName: 'Terraform init'
     inputs:
-      provider: 'azurerm'
-      command: 'init'
-      commandOptions: '-backend-config="./backend/backend-${{parameters.ringName}}.tfvars"'
-      backendServiceArm: 'InsightApp'
+      targetType: 'inline'
+      script: 'terraform init -backend-config="./backend/backend-${{parameters.ringName}}.tfvars"'
       workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
 
 
-  - task: TerraformTaskV4@4
+  - task: Bash@3
     displayName: 'Terraform Validate'
     inputs:
-      provider: 'azurerm'
-      command: 'validate'
+      targetType: 'inline'
+      script: 'terraform validate -var-file="./variables/${{parameters.ringName}}.tfvars"'
       workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
 
-  - task: TerraformTaskV4@4
-    displayName: 'Terraform Plan'
+  - task: Bash@3
+    displayName: 'Terraform plan'
     inputs:
-      provider: 'azurerm'
-      command: 'plan'
-      commandOptions: '-var-file="../../terraform/variables/${{parameters.ringName}}.tfvars"'
-      environmentServiceNameAzureRM: 'InsightApp'
-      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+      targetType: 'inline'
+      script: 'terraform plan -var-file="./variables/${{parameters.ringName}}.tfvars"'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform' 
 
-  - task: TerraformTaskV4@4
-    displayName: 'Terraform Apply'
+
+  - task: Bash@3
+    displayName: 'Terraform apply'
     inputs:
-      provider: 'azurerm'
-      command: 'plan'
-      commandOptions: '-var-file="../../terraform/variables/${{parameters.ringName}}.tfvars" -auto-approve'
-      environmentServiceNameAzureRM: 'InsightApp'
-      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+      targetType: 'inline'
+      script: 'terraform apply -var-file="./variables/${{parameters.ringName}}.tfvars" -auto-approve'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform' 
