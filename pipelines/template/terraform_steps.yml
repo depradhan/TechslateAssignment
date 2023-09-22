@@ -1,7 +1,9 @@
 parameters:
   - name: ringName
     type: string
-
+  - name: tf_path
+    type: string
+    
 steps:
   - task: TerraformInstaller@1
     displayName: 'Install Terraform Tool'
@@ -13,7 +15,7 @@ steps:
     inputs:
       provider: 'azurerm'
       command: 'init'
-      workingDirectory: 'terraform'
+      workingDirectory: '${{parameters.tf_path}}/terraform'
       backendServiceArm: 'InfaCode'
       backendAzureRmResourceGroupName: 'InsightApp'
       backendAzureRmStorageAccountName: 'demostatefiles1'
@@ -25,7 +27,7 @@ steps:
     inputs:
       provider: 'azurerm'
       command: 'plan'
-      workingDirectory: 'terraform'
+      workingDirectory: '${{parameters.tf_path}}/terraform'
       commandOptions: '-var-file="./variables/dev.tfvars"'
       environmentServiceNameAzureRM: 'InfaCode'
 
@@ -34,6 +36,6 @@ steps:
     inputs:
       provider: 'azurerm'
       command: 'apply'
-      workingDirectory: 'terraform'
+      workingDirectory: '${{parameters.tf_path}}/terraform'
       commandOptions: '-var-file="./variables/dev.tfvars" -auto-approve'
       environmentServiceNameAzureRM: 'InfaCode'
