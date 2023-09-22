@@ -5,6 +5,23 @@ parameters:
     type: string
     default: '$(System.ArtifactsDirectory)/drop'
 
+  - name: Azure_Service_ConnectionName
+    type: string
+    default: 'InfaCode'
+  - name: Azure_ResourceGroupName
+    type: string
+    default: 'InsightApp'
+  - name: Azure_StorageAccountName
+    type: string
+    default: 'demostatefiles1'
+  - name: Azure_ContainerName
+    type: string
+    default: 'techslate'
+  - name: DB_UserName
+    type: string
+  - name: DB_Password
+    type: string
+
 stages:
   - stage: ${{parameters.ringName}}
     jobs:
@@ -25,14 +42,19 @@ stages:
               parameters:
                 ringName: ${{parameters.ringName}}
                 tf_path: ${{parameters.tf_path}}
+                Azure_Service_ConnectionName: ${{parameters.Azure_Service_ConnectionName}}
+                Azure_ResourceGroupName: ${{parameters.Azure_ResourceGroupName}}
+                Azure_StorageAccountName: ${{parameters.Azure_StorageAccountName}}
+                Azure_ContainerName: ${{parameters.Azure_ContainerName}}
+                
 
             - task: MysqlDeploymentOnMachineGroup@1
               displayName: 'Deploy Using : SqlTaskFile'
               inputs:
                 SqlFile: '$(System.ArtifactsDirectory)/drop/CreateMYSQLDB.sql'
                 ServerName: techslate.mysql.database.azure.com
-                SqlUsername: demo
-                SqlPassword: 'assignment@12'
+                SqlUsername: ${{parameters.DB_UserName}}
+                SqlPassword: '${{parameters.DB_Password}}'
 
             - task: AzureRmWebAppDeployment@4
               displayName: 'Azure App Service Deploy'
