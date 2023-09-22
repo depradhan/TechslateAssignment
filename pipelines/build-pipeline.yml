@@ -80,6 +80,6 @@ stages:
           Azure_ResourceGroupName: $(Azure_ResourceGroupName)
           Azure_StorageAccountName: $(Azure_StorageAccountName)
           Azure_ContainerName: $(Azure_ContainerName)
-          DB_UserName: $(DB_Password)
+          DB_UserName: $(DB_UserName)
           DB_Password: $(DB_Password)
           
