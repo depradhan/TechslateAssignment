@@ -42,7 +42,7 @@ stages:
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: '$(Build.sourcesdirectory)/terraform'
-          ArtifactName: 'drop'
+          ArtifactName: 'drop/terraform'
           publishLocation: 'Container'
 
 # for loop to run the terraform steps for different enviroements based on the no of environments mention in ringName Parameters
