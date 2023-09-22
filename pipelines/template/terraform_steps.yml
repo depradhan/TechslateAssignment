@@ -3,6 +3,7 @@ parameters:
     type: string
   - name: tf_path
     type: string
+    default: '$(build.sourcesdirectory)'
     
 steps:
   - task: TerraformInstaller@1
