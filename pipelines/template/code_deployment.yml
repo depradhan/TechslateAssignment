@@ -3,7 +3,7 @@ parameters:
     type: string
   - name: tf_path
     type: string
-    default: '$(System.ArtifactsDirectory)/drop/terraform'
+    default: '$(System.ArtifactsDirectory)/drop'
 
 stages:
   - stage: ${{parameters.ringName}}
