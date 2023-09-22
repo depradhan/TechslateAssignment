@@ -4,7 +4,19 @@ parameters:
   - name: tf_path
     type: string
     default: '$(build.sourcesdirectory)'
-    
+  - name: Azure_Service_ConnectionName
+    type: string
+    default: 'InfaCode'
+  - name: Azure_ResourceGroupName
+    type: string
+    default: 'InsightApp'
+  - name: Azure_StorageAccountName
+    type: string
+    default: 'demostatefiles1'
+  - name: Azure_ContainerName
+    type: string
+    default: 'techslate'
+
 steps:
   - task: TerraformInstaller@1
     displayName: 'Install Terraform Tool'
@@ -17,10 +29,10 @@ steps:
       provider: 'azurerm'
       command: 'init'
       workingDirectory: '${{parameters.tf_path}}/terraform'
-      backendServiceArm: 'InfaCode'
-      backendAzureRmResourceGroupName: 'InsightApp'
-      backendAzureRmStorageAccountName: 'demostatefiles1'
-      backendAzureRmContainerName: 'techslate'
+      backendServiceArm: '${{parameters.Azure_Service_ConnectionName}}'
+      backendAzureRmResourceGroupName: '${{parameters.Azure_ResourceGroupName}}'
+      backendAzureRmStorageAccountName: '${{parameters.Azure_StorageAccountName}}'
+      backendAzureRmContainerName: '${{parameters.Azure_ContainerName}}'
       backendAzureRmKey: 'terraform.tfstate'
 
   - task: TerraformTaskV4@4
@@ -30,7 +42,7 @@ steps:
       command: 'plan'
       workingDirectory: '${{parameters.tf_path}}/terraform'
       commandOptions: '-var-file="./variables/dev.tfvars"'
-      environmentServiceNameAzureRM: 'InfaCode'
+      environmentServiceNameAzureRM: '${{parameters.Azure_Service_ConnectionName}}'
 
   - task: TerraformTaskV4@4
     displayName: Terraform apply
@@ -40,4 +52,4 @@ steps:
       command: 'apply'
       workingDirectory: '${{parameters.tf_path}}/terraform'
       commandOptions: '-var-file="./variables/dev.tfvars" -auto-approve'
-      environmentServiceNameAzureRM: 'InfaCode'
+      environmentServiceNameAzureRM: '${{parameters.Azure_Service_ConnectionName}}'
