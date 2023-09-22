@@ -34,11 +34,16 @@ stages:
           Contents: |
             **/target/*.war
             *.sql
-            /terraform/
           TargetFolder: '$(build.artifactstagingdirectory)'
+     
 
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Artifact: drop'
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.sourcesdirectory)/terraform'
+          ArtifactName: 'drop'
+          publishLocation: 'Container'
 
 # for loop to run the terraform steps for different enviroements based on the no of environments mention in ringName Parameters
     - ${{each ring in parameters.rings}}:
