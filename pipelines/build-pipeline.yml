@@ -7,6 +7,15 @@ name: $(Rev:r)
 variables:
   - name: tf_path
     value: '$(build.sourcesdirectory)'
+  - name: Azure_Service_ConnectionName
+    value: 'InfaCode'
+  - name: Azure_ResourceGroupName
+    value: 'InsightApp'
+  - name: Azure_StorageAccountName
+    value: 'demostatefiles1'
+  - name: Azure_ContainerName
+    value: 'techslate'
+
 pool:
   vmImage: 'windows-latest'
 
@@ -57,9 +66,20 @@ stages:
             parameters:
               ringName: ${{ring.name}}
               tf_path: $(tf_path)
+              Azure_Service_ConnectionName: $(Azure_Service_ConnectionName)
+              Azure_ResourceGroupName: $(Azure_ResourceGroupName)
+              Azure_StorageAccountName: $(Azure_StorageAccountName)
+              Azure_ContainerName: $(Azure_ContainerName)
 
 #Dynamic step to create 'N' no of Deployments stages based on Number of enviroments mentioned in ringName parameters
 - ${{each ring in parameters.rings}}:
       - template: template/code_deployment.yml
         parameters:
           ringName: ${{ring.name}}
+          Azure_Service_ConnectionName: $(Azure_Service_ConnectionName)
+          Azure_ResourceGroupName: $(Azure_ResourceGroupName)
+          Azure_StorageAccountName: $(Azure_StorageAccountName)
+          Azure_ContainerName: $(Azure_ContainerName)
+          DB_UserName: $(DB_Password)
+          DB_Password: $(DB_Password)
+          
