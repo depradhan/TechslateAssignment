@@ -7,44 +7,33 @@ steps:
     displayName: 'Install Terraform Tool'
     inputs:
       terraformVersion: 'latest'
-      
-  - task: AzureCLI@2
-    displayName: "Terraform Init"
-    inputs:
-      azureSubscription: 'InsightApp'
-      scriptType: 'batch'
-      scriptLocation: 'inlineScript'
-      inlineScript: 'terraform init -backend-config="./backend/backend-${{parameters.ringName}}.tfvars"'
-      addSpnToEnvironment: true
-      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
 
-  - task: AzureCLI@2
-    displayName: "Terraform validate"
+  - task: TerraformTaskV4@4
+    displayName: Terraform init
     inputs:
-      azureSubscription: 'InsightApp'
-      scriptType: 'batch'
-      scriptLocation: 'inlineScript'
-      inlineScript: 'terraform validate -var-file="./variables/${{parameters.ringName}}.tfvars"'
-      addSpnToEnvironment: true
-      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+      provider: 'azurerm'
+      command: 'init'
+      workingDirectory: 'terraform'
+      backendServiceArm: 'InfaCode'
+      backendAzureRmResourceGroupName: 'InsightApp'
+      backendAzureRmStorageAccountName: 'demostatefiles1'
+      backendAzureRmContainerName: 'techslate'
+      backendAzureRmKey: 'terraform.tfstate'
 
-
-  - task: AzureCLI@2
-    displayName: "Terraform plan"
+  - task: TerraformTaskV4@4
+    displayName: Terraform plan
     inputs:
-      azureSubscription: 'InsightApp'
-      scriptType: 'batch'
-      scriptLocation: 'inlineScript'
-      inlineScript: 'terraform plan -var-file="./variables/${{parameters.ringName}}.tfvars"'
-      addSpnToEnvironment: true
-      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+      provider: 'azurerm'
+      command: 'plan'
+      workingDirectory: 'terraform'
+      commandOptions: '-var-file="./variables/dev.tfvars"'
+      environmentServiceNameAzureRM: 'InfaCode'
 
-  - task: AzureCLI@2
-    displayName: "Terraform apply"
+  - task: TerraformTaskV4@4
+    displayName: Terraform apply
     inputs:
-      azureSubscription: 'InsightApp'
-      scriptType: 'batch'
-      scriptLocation: 'inlineScript'
-      inlineScript: 'terraform plan -var-file="./variables/${{parameters.ringName}}.tfvars"'
-      addSpnToEnvironment: true
-      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+      provider: 'azurerm'
+      command: 'apply'
+      workingDirectory: 'terraform'
+      commandOptions: '-var-file="./variables/dev.tfvars" -auto-approve'
+      environmentServiceNameAzureRM: 'InfaCode'
