@@ -34,7 +34,7 @@ stages:
           Contents: |
             **/target/*.war
             *.sql
-            /terraform/**
+            /terraform/
           TargetFolder: '$(build.artifactstagingdirectory)'
 
       - task: PublishBuildArtifacts@1
