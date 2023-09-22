@@ -1,6 +1,10 @@
 parameters:
   - name: ringName
     type: string
+  - name: tf_path
+    type: string
+    default: '$(System.ArtifactsDirectory)/drop/terraform'
+
 stages:
   - stage: ${{parameters.ringName}}
     jobs:
@@ -20,11 +24,12 @@ stages:
             - template: ./terraform_steps.yml
               parameters:
                 ringName: ${{parameters.ringName}}
+                tf_path: ${{parameters.tf_path}}
 
             - task: MysqlDeploymentOnMachineGroup@1
               displayName: 'Deploy Using : SqlTaskFile'
               inputs:
-                SqlFile: '$(System.DefaultWorkingDirectory)/_MyShuttleBuild/drop/CreateMYSQLDB.sql'
+                SqlFile: '$(System.ArtifactsDirectory)/drop/CreateMYSQLDB.sql'
                 ServerName: techslate.mysql.database.azure.com
                 SqlUsername: demo
                 SqlPassword: 'assignment@12'
@@ -35,4 +40,4 @@ stages:
                 azureSubscription: 'Assignment_Azure'
                 appType: webAppLinux
                 WebAppName: 'freelancing-${{parameters.ringName}}'
-                packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.war'
+                packageForLinux: '$(System.ArtifactsDirectory)/**/*.war'
