@@ -72,14 +72,14 @@ stages:
               Azure_ContainerName: $(Azure_ContainerName)
 
 #Dynamic step to create 'N' no of Deployments stages based on Number of enviroments mentioned in ringName parameters
-- ${{each ring in parameters.rings}}:
-      - template: template/code_deployment.yml
-        parameters:
-          ringName: ${{ring.name}}
-          Azure_Service_ConnectionName: $(Azure_Service_ConnectionName)
-          Azure_ResourceGroupName: $(Azure_ResourceGroupName)
-          Azure_StorageAccountName: $(Azure_StorageAccountName)
-          Azure_ContainerName: $(Azure_ContainerName)
-          DB_UserName: $(DB_UserName)
-          DB_Password: $(DB_Password)
+# - ${{each ring in parameters.rings}}:
+#       - template: template/code_deployment.yml
+#         parameters:
+#           ringName: ${{ring.name}}
+#           Azure_Service_ConnectionName: $(Azure_Service_ConnectionName)
+#           Azure_ResourceGroupName: $(Azure_ResourceGroupName)
+#           Azure_StorageAccountName: $(Azure_StorageAccountName)
+#           Azure_ContainerName: $(Azure_ContainerName)
+#           DB_UserName: $(DB_UserName)
+#           DB_Password: $(DB_Password)
           
