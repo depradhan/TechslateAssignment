@@ -46,10 +46,10 @@ steps:
 
   - task: TerraformTaskV4@4
     displayName: Terraform apply
-    condition: ne(variables['System.StageName'], 'build')  # Skip if the stage name is 'build'
+    #condition: ne(variables['System.StageName'], 'build')  # Skip if the stage name is 'build'
     inputs:
       provider: 'azurerm'
-      command: 'apply'
+      command: 'destroy'
       workingDirectory: '${{parameters.tf_path}}/terraform'
       commandOptions: '-var-file="./variables/dev.tfvars" -auto-approve'
       environmentServiceNameAzureRM: '${{parameters.Azure_Service_ConnectionName}}'
